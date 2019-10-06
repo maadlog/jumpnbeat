@@ -27,9 +27,20 @@ public class PlayerController : MonoBehaviour
     bool airborne = false;
     bool doubleJump = false;
     bool isIdle = true;
+    public float YTolerance = 2f;
     // Update is called once per frame
     void Update()
     {
+        
+        if (platform != null
+            && this.gameObject.transform.position.y - this.platform.transform.localScale.y < -1)
+        {
+            float difToPlatform = this.gameObject.transform.position.y - this.platform.transform.localScale.y;
+            Debug.Log($"Trapped!! {difToPlatform} {platform.name}");
+            transform.position = new Vector3(transform.position.x, transform.position.y + Mathf.Abs(difToPlatform), transform.position.z);
+            this.GetComponent<Rigidbody>().AddForce(0, 2 * Mathf.Abs(difToPlatform), 0, ForceMode.Impulse);
+        }
+
         if (gracePeriod > 0)
         {
             gracePeriod -= Time.deltaTime;
@@ -85,14 +96,27 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private GameObject platform;
+
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
             airborne = false;
             doubleJump = false;
+            this.platform = collision.gameObject.GetComponentInParent<MovingPlatform>().gameObject;
         }
     }
+
+    
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            this.platform = null;
+        }
+    }
+
 
     private bool Graced()
     {
