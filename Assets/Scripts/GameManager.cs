@@ -7,7 +7,8 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    GameObject plane;
+    public GameObject plane;
+    GroundManagement mgmnt;
 
     public Text scoreText;
     public Text deathsText;
@@ -20,13 +21,12 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        plane = GameObject.FindGameObjectWithTag("Ground");
     }
 
     // Start is called before the first frame update
     void Start()
     {
-        
+        mgmnt = plane.GetComponent<GroundManagement>();
     }
 
     
@@ -37,7 +37,7 @@ public class GameManager : MonoBehaviour
         showingHitTimer -= Time.deltaTime;
         if (showingHitTimer <= 0)
         {
-            plane.GetComponent<MeshRenderer>().material.color = Color.white;
+            mgmnt.SetColor(Color.cyan);
         }
         
     }
@@ -45,13 +45,13 @@ public class GameManager : MonoBehaviour
     public void ShowHit()
     {
         showingHitTimer = 0.2f;
-        plane.GetComponent<MeshRenderer>().material.color = Color.red;
+        mgmnt.SetColor(Color.red);
     }
 
     public void ShowHitReversion()
     {
         showingHitTimer = 0.2f;
-        plane.GetComponent<MeshRenderer>().material.color = Color.green;
+        mgmnt.SetColor(Color.green);
     }
 
     internal void PlayerDeath()

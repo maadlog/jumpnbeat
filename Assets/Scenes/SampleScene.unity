@@ -303,6 +303,24 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f179149afae4546d19c207562bfb56b4, type: 3}
+--- !u!1 &612378561 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7816420235524120543, guid: f179149afae4546d19c207562bfb56b4,
+    type: 3}
+  m_PrefabInstance: {fileID: 592963448}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &612378562
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 612378561}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 54224273ac5db4139b1bb91e829218d8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!108 &705507994 stripped
 Light:
   m_CorrespondingSourceObject: {fileID: 746616373459706839, guid: 0b5da05863d1c4d66b936665c65a7e9e,
@@ -703,6 +721,11 @@ PrefabInstance:
       propertyPath: multiplierText
       value: 
       objectReference: {fileID: 727767173}
+    - target: {fileID: 8470883507606455270, guid: f41e85c8d9efe41de97a27be03c2f9e3,
+        type: 3}
+      propertyPath: plane
+      value: 
+      objectReference: {fileID: 612378561}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f41e85c8d9efe41de97a27be03c2f9e3, type: 3}
 --- !u!1001 &1736851521
