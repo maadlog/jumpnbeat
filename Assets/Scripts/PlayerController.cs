@@ -27,18 +27,25 @@ public class PlayerController : MonoBehaviour
     bool airborne = false;
     bool doubleJump = false;
     bool isIdle = true;
-    public float YTolerance = 2f;
+    public float YTolerance = 0.0f;
+    public float PlatformPushForce = 4f;
     // Update is called once per frame
     void Update()
     {
-        
-        if (platform != null
-            && this.gameObject.transform.position.y - this.platform.transform.localScale.y < -1)
+        if (platform != null)
         {
-            float difToPlatform = this.gameObject.transform.position.y - this.platform.transform.localScale.y;
-            Debug.Log($"Trapped!! {difToPlatform} {platform.name}");
-            transform.position = new Vector3(transform.position.x, transform.position.y + Mathf.Abs(difToPlatform), transform.position.z);
-            this.GetComponent<Rigidbody>().AddForce(0, 2 * Mathf.Abs(difToPlatform), 0, ForceMode.Impulse);
+            float difToPlatform = (this.platform.transform.localScale.y + this.platform.transform.position.y) - this.gameObject.transform.position.y;
+            
+            if (Mathf.Abs(difToPlatform) > 0)
+            {
+                Debug.Log($"Trapped!! {difToPlatform} {platform.name}");
+
+                var dist = Mathf.Min( Mathf.Abs(difToPlatform),2);
+                Debug.Log($"TRansofmr!! {dist}");
+                transform.position += new Vector3(0, dist, 0);
+                this.GetComponent<Rigidbody>().AddForce(new Vector3(0, dist * PlatformPushForce, 0), ForceMode.Impulse);
+            }
+            
         }
 
         if (gracePeriod > 0)
@@ -104,7 +111,7 @@ public class PlayerController : MonoBehaviour
         {
             airborne = false;
             doubleJump = false;
-            this.platform = collision.gameObject.GetComponentInParent<MovingPlatform>().gameObject;
+            platform = collision.gameObject.GetComponentInParent<MovingPlatform>()?.gameObject;
         }
     }
 
@@ -178,11 +185,11 @@ public class PlayerController : MonoBehaviour
     void TakeHit()
     {
         GameManager.Instance.ShowHit();
-        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 1);
+        //this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, this.transform.position.z - 1);
     }
     void ReverseHit()
     {
         GameManager.Instance.ShowHitReversion();
-        this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, Mathf.Min(this.transform.position.z + 1, 0));
+        //this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, Mathf.Min(this.transform.position.z + 1, 0));
     }
 }

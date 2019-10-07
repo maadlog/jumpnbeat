@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,9 +17,16 @@ public class WallSpawner : MonoBehaviour
     private long spawned;
     private float spawnTimer = InitialSpawnRate;
 
+    private bool stopped;
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            //AudioPeer.Pause();
+            stopped = !stopped;
+        }
+        if (stopped) { return; }
         spawnTimer -= Time.deltaTime;
         if (spawnTimer <= 0)
         {
@@ -37,5 +45,17 @@ public class WallSpawner : MonoBehaviour
     {
         spawned++;
         Instantiate(wallPrefab, this.transform.position, Quaternion.identity);
+    }
+
+    public void Stop()
+    {
+        this.stopped = true;
+    }
+    public void Reset()
+    {
+        this.stopped = false;
+        this.spawnRate = InitialSpawnRate;
+        this.spawned = 0;
+        this.spawnTimer = InitialSpawnRate;
     }
 }

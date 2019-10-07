@@ -6,7 +6,7 @@ using UnityEngine;
 [RequireComponent(typeof(AudioSource))]
 public class AudioPeer : MonoBehaviour
 {
-    AudioSource audioSource;
+    static AudioSource audioSource;
 
     public static float[] samples = new float[512];
     public float[] freqBand = new float[8];
@@ -17,6 +17,19 @@ public class AudioPeer : MonoBehaviour
 
     public static float[] audioBand = new float[8];
     public static float[] audioBandBuffer = new float[8];
+
+    public static void Pause()
+    {
+        if (audioSource.isPlaying)
+        {
+            audioSource.Pause();
+        }
+        else
+        {
+            audioSource.UnPause();
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,10 +45,18 @@ public class AudioPeer : MonoBehaviour
         }
     }
 
+    float timer = 0;
     // Update is called once per frame
     void Update()
     {
-
+        if (audioSource.isPlaying)
+        {
+            timer += Time.deltaTime;
+        }
+        if (timer >= audioSource.clip.length)
+        {
+            GameManager.Instance.FinishGame();
+        }
         
         GetSpectrumAudioSource();
         

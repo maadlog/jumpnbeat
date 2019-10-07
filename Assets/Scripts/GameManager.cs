@@ -7,8 +7,10 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
-    public GameObject plane;
+    public GameObject oPlane;
+    public GameObject oWallSpawner;
     GroundManagement mgmnt;
+    WallSpawner spawner;
 
     public Text scoreText;
     public Text deathsText;
@@ -26,7 +28,8 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        mgmnt = plane.GetComponent<GroundManagement>();
+        mgmnt = oPlane.GetComponent<GroundManagement>();
+        spawner = oWallSpawner.GetComponent<WallSpawner>();
     }
 
     
@@ -70,6 +73,11 @@ public class GameManager : MonoBehaviour
         multiplier *= 2;
         multiplier = Mathf.Clamp(multiplier, 1, 8);
         multiplierText.text = $"Multiplier: x{multiplier}";
+    }
+
+    internal void FinishGame()
+    {
+        spawner.Stop();
     }
 
     internal void ResetMultiplier()
