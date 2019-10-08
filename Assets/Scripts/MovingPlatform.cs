@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -27,4 +28,13 @@ public class MovingPlatform : MonoBehaviour
         Debug.Log("Exited" + this.name);
         //collision.other.GetComponent<PlayerController>?.RemovePlatform();
     }
+
+    Vector3 normal = new Vector3(0, 1, 0);
+    public Vector3 GetNormal()
+    {
+        return this.transform.up;
+        
+    }
+
+   
 }

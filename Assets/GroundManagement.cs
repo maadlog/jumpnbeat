@@ -5,6 +5,7 @@ using UnityEngine;
 public class GroundManagement : MonoBehaviour
 {
     MeshRenderer[] childMeshes;
+    public Vector3 up;
     // Start is called before the first frame update
     void Start()
     {
@@ -13,8 +14,7 @@ public class GroundManagement : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        
+    { 
     }
 
     public void SetColor(Color color)

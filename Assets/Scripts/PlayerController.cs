@@ -29,9 +29,25 @@ public class PlayerController : MonoBehaviour
     bool isIdle = true;
     public float YTolerance = 0.0f;
     public float PlatformPushForce = 4f;
+
+    public bool useGravity = true;
+    new Rigidbody rigidbody;
+    Vector3 personalGravity = Physics.gravity;
+    void Awake()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
+
+    void FixedUpdate()
+    {
+        rigidbody.useGravity = false;
+        if (useGravity) rigidbody.AddForce(personalGravity * (rigidbody.mass * rigidbody.mass));
+    }
+
     // Update is called once per frame
     void Update()
     {
+        /*
         if (platform != null)
         {
             float difToPlatform = (this.platform.transform.localScale.y + this.platform.transform.position.y) - this.gameObject.transform.position.y;
@@ -41,13 +57,14 @@ public class PlayerController : MonoBehaviour
                 Debug.Log($"Trapped!! {difToPlatform} {platform.name}");
 
                 var dist = Mathf.Min( Mathf.Abs(difToPlatform),2);
+                Vector3 normal = platform.GetNormal();
                 Debug.Log($"TRansofmr!! {dist}");
-                transform.position += new Vector3(0, dist, 0);
-                this.GetComponent<Rigidbody>().AddForce(new Vector3(0, dist * PlatformPushForce, 0), ForceMode.Impulse);
+                transform.position += normal.normalized * dist;
+                this.GetComponent<Rigidbody>().AddForce(normal.normalized * dist * PlatformPushForce, ForceMode.Impulse);
             }
             
         }
-
+        */
         if (gracePeriod > 0)
         {
             gracePeriod -= Time.deltaTime;
@@ -59,8 +76,11 @@ public class PlayerController : MonoBehaviour
                 this.GetComponent<Animator>().Play("StartRunning");
                 isIdle = false;
             }
-            transform.position = new Vector3(transform.position.x - speed * Time.deltaTime, transform.position.y, transform.position.z);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 90, 0), 720 * Time.deltaTime);
+            //rigidbody.MovePosition(transform.position + Vector3.Cross(transform.up, transform.forward).normalized * speed * Time.deltaTime * -1);
+
+            //transform.position = new Vector3(transform.position.x - speed * Time.deltaTime, transform.position.y, transform.position.z);
+            transform.position = transform.position + Vector3.Cross(transform.up, transform.forward).normalized * speed * Time.deltaTime * -1;
+            //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, 90, 0), 720 * Time.deltaTime);
         }
         if (Input.GetKey(RIGHT))
         {
@@ -69,8 +89,11 @@ public class PlayerController : MonoBehaviour
                 this.GetComponent<Animator>().Play("StartRunning");
                 isIdle = false;
             }
-            transform.position = new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y, transform.position.z);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, -90, 0), 720 * Time.deltaTime);
+            //rigidbody.MovePosition(transform.position + Vector3.Cross(transform.up, transform.forward).normalized * speed * Time.deltaTime);
+
+            transform.position = transform.position + Vector3.Cross(transform.up, transform.forward).normalized * speed * Time.deltaTime;
+            //transform.position = new Vector3(transform.position.x + speed * Time.deltaTime, transform.position.y, transform.position.z);
+            //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(0, -90, 0), 720 * Time.deltaTime);
         }
 
         if (Input.GetKeyDown(UP) && !doubleJump)
@@ -81,13 +104,14 @@ public class PlayerController : MonoBehaviour
                 doubleJump = true;
             }
             airborne = true;
-            this.GetComponent<Rigidbody>().AddForce(0, 15, 0, ForceMode.Impulse);
+            this.GetComponent<Rigidbody>().AddForce(this.transform.up.normalized * 15, ForceMode.Impulse);
         }
 
         if (Input.GetKeyDown(DOWN) && airborne)
         {
+            this.ResetGravity();
+            this.GetComponent<Rigidbody>().AddForce(this.transform.up.normalized * -20, ForceMode.VelocityChange);
             
-            this.GetComponent<Rigidbody>().AddForce(new Vector3(0, -20, 0), ForceMode.VelocityChange);
         }
 
         if (Input.GetKey(KeyCode.Escape))
@@ -98,12 +122,12 @@ public class PlayerController : MonoBehaviour
         if (!Input.anyKey && !airborne)
         {
             this.isIdle = true;
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.identity, 720 * Time.deltaTime);
+            //transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.identity, 720 * Time.deltaTime);
             this.GetComponent<Animator>().Play("Idle");
         }
     }
 
-    private GameObject platform;
+    private MovingPlatform platform;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -111,7 +135,7 @@ public class PlayerController : MonoBehaviour
         {
             airborne = false;
             doubleJump = false;
-            platform = collision.gameObject.GetComponentInParent<MovingPlatform>()?.gameObject;
+            platform = collision.gameObject.GetComponentInParent<MovingPlatform>();
         }
     }
 
@@ -180,7 +204,42 @@ public class PlayerController : MonoBehaviour
         {
             other.gameObject.GetComponentInParent<Wall>().Break();
         }
+        if (other.GetComponent<GravityZone>() != null)
+        {
+             resetGravityEnabled = true;
+        }
+        
     }
+    bool resetGravityEnabled = false;
+    private void ResetGravity(){
+        if (resetGravityEnabled){
+            this.transform.up = Vector3.RotateTowards(
+                this.transform.up
+                , Physics.gravity.normalized * -1
+                , 10000f
+                , 0);
+            
+            this.personalGravity = Physics.gravity;
+            
+        }
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.GetComponent<GravityZone>() != null)
+        {
+            this.transform.up = Vector3.RotateTowards(
+                this.transform.up
+                , other.GetComponent<GravityZone>().GetGravity().normalized * -1
+                , 10f * Time.deltaTime
+                , 0);
+            
+            this.personalGravity = other.GetComponent<GravityZone>().GetGravity();
+        
+        resetGravityEnabled = false;
+        }
+    }
+    
 
     void TakeHit()
     {
