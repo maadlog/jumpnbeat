@@ -224,6 +224,11 @@ MonoBehaviour:
   LEFT: 97
   DOWN: 115
   RIGHT: 100
+  gracePeriod: 0
+  gracePeriodResetValue: 0.3
+  jumpVelocity: 15
+  YTolerance: 0
+  PlatformPushForce: 4
   comebackAt: 6
 --- !u!1 &760959766873878021
 GameObject:

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public class WallSpawner : MonoBehaviour
 {
@@ -18,7 +19,14 @@ public class WallSpawner : MonoBehaviour
     private float spawnTimer = InitialSpawnRate;
 
     private bool stopped;
+
+    
+    [Range(0,1)] public float tresholdUp = 0.8f;
+    [Range(0,1)] public float tresholdDown = 0.8f;
+    private int audioBand = 0;
     // Update is called once per frame
+    private float timeLimit;
+    public float minTimeBetweenWalls = 2f;
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
@@ -27,24 +35,29 @@ public class WallSpawner : MonoBehaviour
             stopped = !stopped;
         }
         if (stopped) { return; }
-        spawnTimer -= Time.deltaTime;
-        if (spawnTimer <= 0)
-        {
-            SpawnWall();
-            spawnTimer = spawnRate;
-        }
 
-        if (spawned > 20)
-        {
-            spawnRate = Mathf.Clamp(spawnRate * 0.9f, 1f, InitialSpawnRate);
-            spawned = 0;
+        timeLimit -= Time.deltaTime;
+
+        if (timeLimit < 0) {
+            var graces = new bool[8];
+            for(int i = 0; i < 8; i++) {
+                graces[i] = AudioPeer.audioBand[i] > tresholdDown && AudioPeer.audioBand[i] < tresholdUp;
+            }   
+            if (graces.Any(x => x == true)) {
+                SpawnWall(graces);
+            }
+            timeLimit = minTimeBetweenWalls;
         }
+       
+
+       
     }
 
-    void SpawnWall()
+    void SpawnWall(bool[] graces)
     {
         spawned++;
-        Instantiate(wallPrefab, this.transform.position, Quaternion.identity);
+        var wall = Instantiate(wallPrefab, this.transform.position, this.transform.rotation);
+        wall.GetComponent<Wall>().SetGraces(graces);
     }
 
     public void Stop()

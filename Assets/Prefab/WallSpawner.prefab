@@ -13,7 +13,7 @@ GameObject:
   m_Layer: 0
   m_Name: WallSpawner
   m_TagString: Untagged
-  m_Icon: {fileID: 6519382022992737161, guid: 0000000000000000d000000000000000, type: 0}
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -45,3 +45,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wallPrefab: {fileID: 5312406348715214847, guid: a76e9e7b19ce74ace9e5cb790cc93428,
     type: 3}
+  tresholdUp: 0.8
+  tresholdDown: 0.45
+  minTimeBetweenWalls: 0.5
