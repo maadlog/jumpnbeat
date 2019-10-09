@@ -196,7 +196,7 @@ PrefabInstance:
     - target: {fileID: 8319899688437213271, guid: b4d80fd3d75bd41cabb981d4c88af5ad,
         type: 3}
       propertyPath: jumpVelocity
-      value: 20
+      value: 22
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b4d80fd3d75bd41cabb981d4c88af5ad, type: 3}
@@ -1269,6 +1269,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 8300000, guid: a3f59ce2b37c441f7aaa21457b123157, type: 3}
+      objectReference: {fileID: 8300000, guid: f4ebf766ebf2e42fdaf88442d30839e1, type: 3}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 81a581a4d4e4c47d59b300056f27b72c, type: 3}

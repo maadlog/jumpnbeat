@@ -92,15 +92,14 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown(UP) && !doubleJump)
         {
-            var speed = jumpVelocity;
             if (airborne)
             {
                 this.GetComponent<Rigidbody>().velocity = Vector3.zero;
-                speed = jumpVelocity / 2;
                 doubleJump = true;
             }
             airborne = true;
-            this.GetComponent<Rigidbody>().velocity = (this.transform.up.normalized * speed);
+            
+            this.GetComponent<Rigidbody>().velocity = (this.transform.up.normalized * jumpVelocity);
         }
 
         if (Input.GetKeyDown(DOWN) && airborne)
